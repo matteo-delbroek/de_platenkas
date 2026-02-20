@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instellingen – Platenkast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<script>
+    const _t = localStorage.getItem('theme') || 'default';
+    document.documentElement.className = _t;
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add(_t);
+        const _v = localStorage.getItem('view') || 'grid';
+        document.querySelectorAll('.view-toggle button').forEach(btn => {
+            if (btn.dataset.view === _v) btn.classList.add('active');
+        });
+    });
+</script>
+<body>
+    <header class="top-header">
+        <a href="{{ url_for('index') }}" class="icon-btn" style="text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h1>Instellingen</h1>
+        <div style="width:42px"></div>
+    </header>
+
+    <main class="settings-container">
+
+        <!-- Weergave -->
+        <div class="settings-card">
+            <h3><i class="fa-solid fa-table-cells" style="font-size:1rem; margin-right:8px;"></i>Weergave</h3>
+            <div class="view-toggle">
+                <button data-view="grid" onclick="setView('grid')">
+                    <i class="fa-solid fa-table-cells-large"></i> Blokken
+                </button>
+                <button data-view="list" onclick="setView('list')">
+                    <i class="fa-solid fa-list"></i> Lijst
+                </button>
+            </div>
+        </div>
+
+        <!-- Thema -->
+        <div class="settings-card">
+            <h3><i class="fa-solid fa-palette" style="font-size:1rem; margin-right:8px;"></i>Thema</h3>
+            <div class="theme-grid">
+                <button class="theme-btn" onclick="setTheme('default')">
+                    <div class="swatch" style="background: linear-gradient(135deg, #f5f0e8, #c8490a);"></div>
+                    Licht
+                </button>
+                <button class="theme-btn" onclick="setTheme('dark')">
+                    <div class="swatch" style="background: linear-gradient(135deg, #0e0c09, #e05a1a);"></div>
+                    Donker
+                </button>
+                <button class="theme-btn" onclick="setTheme('retro')">
+                    <div class="swatch" style="background: linear-gradient(135deg, #1c0f05, #e8801a);"></div>
+                    Retro
+                </button>
+            </div>
+        </div>
+
+        <!-- Over -->
+        <div class="settings-card" style="text-align:center; opacity: 0.6;">
+            <i class="fa-solid fa-record-vinyl" style="font-size: 2rem; display:block; margin-bottom: 8px;"></i>
+            <p style="font-size:0.78rem;">Platenkast · Jouw vinyl collectie</p>
+        </div>
+
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="{{ url_for('index') }}" class="nav-item">
+            <i class="fa-solid fa-record-vinyl"></i>
+            <span>Collectie</span>
+        </a>
+        <a href="{{ url_for('settings') }}" class="nav-item active">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+    <script>
+        function setTheme(t) {
+            localStorage.setItem('theme', t);
+            window.location.reload();
+        }
+        function setView(v) {
+            localStorage.setItem('view', v);
+            document.querySelectorAll('.view-toggle button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === v);
+            });
+        }
+    </script>
+</body>
+</html>

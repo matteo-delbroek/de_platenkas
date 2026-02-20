@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De platenkast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<script>
+    const theme = localStorage.getItem('theme') || 'default';
+    const view  = localStorage.getItem('view')  || 'grid';
+    document.documentElement.className = theme;
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add(theme);
+        if (view === 'list') document.body.classList.add('list-view');
+    });
+</script>
+<body>
+    <header class="top-header">
+        <h1>De platenkast</h1>
+        <button id="randomBtn" class="icon-btn" title="Willekeurige plaat">
+            <i class="fa-solid fa-dice"></i>
+        </button>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Zoek op titel of artiest…" autocomplete="off">
+    </div>
+
+    <main class="lp-grid" id="lpContainer">
+        {% for lp in platen %}
+        <div class="lp-card" data-titel="{{ lp.titel | lower }}" data-artiest="{{ lp.artiest | lower }}">
+            <div class="lp-cover">
+                {% if lp.hoes %}
+                    <img src="{{ url_for('static', filename='uploads/' + lp.hoes) }}" alt="{{ lp.titel }}">
+                {% else %}
+                    <div class="vinyl-placeholder"></div>
+                {% endif %}
+            </div>
+            <div class="lp-info">
+                <div class="lp-text">
+                    <h3>{{ lp.titel }}</h3>
+                    <p>{{ lp.artiest }}</p>
+                </div>
+                <div class="card-actions">
+                    <a href="{{ url_for('edit_lp', id=lp.id) }}" title="Bewerken">
+                        <i class="fa-solid fa-pencil"></i>
+                    </a>
+                    <a href="{{ url_for('delete_lp', id=lp.id) }}" title="Verwijderen"
+                       onclick="return confirm('Wil je "{{ lp.titel }}" verwijderen?')">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state" style="grid-column: 1 / -1;">
+            <i class="fa-solid fa-record-vinyl"></i>
+            <h3>Nog geen platen</h3>
+            <p>Tik op + om je eerste LP toe te voegen</p>
+        </div>
+        {% endfor %}
+    </main>
+
+    <!-- Custom toast instead of alert -->
+    <div class="vinyl-toast" id="vinylToast">
+        <div class="toast-label">🎲 De dobbelsteen kiest</div>
+        <div class="toast-title" id="toastTitle">—</div>
+        <div class="toast-artist" id="toastArtist">—</div>
+    </div>
+
+    <a href="{{ url_for('add_lp') }}" class="fab-btn" title="LP toevoegen">
+        <i class="fa-solid fa-plus"></i>
+    </a>
+
+    <nav class="bottom-nav">
+        <a href="{{ url_for('index') }}" class="nav-item active">
+            <i class="fa-solid fa-record-vinyl"></i>
+            <span>Collectie</span>
+        </a>
+        <a href="{{ url_for('settings') }}" class="nav-item">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'Bewerken' if lp else 'LP Toevoegen' }} – Platenkast</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<script>
+    const _t = localStorage.getItem('theme') || 'default';
+    document.documentElement.className = _t;
+    document.addEventListener("DOMContentLoaded", () => { document.body.classList.add(_t); });
+</script>
+<body>
+    <header class="top-header">
+        <a href="{{ url_for('index') }}" class="icon-btn" style="text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h1>{{ 'Bewerken' if lp else 'Toevoegen' }}</h1>
+        <div style="width:42px"></div>
+    </header>
+
+    <main class="form-container">
+        <form method="POST" enctype="multipart/form-data" class="app-form">
+
+            <div class="photo-upload-container" id="uploadBox" onclick="document.getElementById('file-input').click()">
+                <i class="fa-solid fa-camera" id="uploadIcon"></i>
+                <p id="uploadText">Tik om foto te kiezen of te maken</p>
+                <img id="preview"
+                     src="{{ url_for('static', filename='uploads/' + lp.hoes) if lp and lp.hoes else '' }}"
+                     style="{{ 'display:block' if lp and lp.hoes else 'display:none' }}"
+                     alt="Cover preview">
+            </div>
+            <input type="file" name="afbeelding" id="file-input" accept="image/*" capture="environment">
+
+            <div class="input-group">
+                <label for="titel">Titel</label>
+                <input type="text" id="titel" name="titel"
+                       value="{{ lp.titel if lp else '' }}"
+                       placeholder="Naam van het album"
+                       required autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="artiest">Artiest</label>
+                <input type="text" id="artiest" name="artiest"
+                       value="{{ lp.artiest if lp else '' }}"
+                       placeholder="Naam van de artiest"
+                       required autocomplete="off">
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-check" style="margin-right:8px;"></i>
+                {{ 'Opslaan' if lp else 'Toevoegen' }}
+            </button>
+        </form>
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const preview   = document.getElementById('preview');
+        const icon      = document.getElementById('uploadIcon');
+        const text      = document.getElementById('uploadText');
+
+        fileInput.addEventListener('change', function () {
+            const [file] = this.files;
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+                icon.style.opacity = '0';
+                text.style.opacity = '0';
+            }
+        });
+    </script>
+</body>
+</html>
